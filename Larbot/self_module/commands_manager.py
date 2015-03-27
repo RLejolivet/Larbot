@@ -8,6 +8,7 @@ Created on 2015-03-15
 
 
 import threading
+import time
 
 
 from Larbot.self_module.message_queue import send_msg, create_msg
@@ -26,7 +27,7 @@ def run(command, socket, channel, name, args, qwindow=None):
         'name': name,
         'args': args,
         'qwindow': qwindow
-        }
+    }
     if(command in commands.keys()):
         t = threading.Thread(target=commands[command], kwargs=kwargs)
         t.setDaemon(True)
@@ -47,7 +48,6 @@ def print_commands(socket, channel, name, args, qwindow=None):
     send_msg(socket, ret)
 
 commands = dict()
-commands["hello"] = hello
 commands["commands"] = print_commands
 commands["enter"] = Larbot.self_module.commands.smash_commands.enter
 commands["open"] = Larbot.self_module.commands.smash_commands.open_list
@@ -57,6 +57,8 @@ commands["next"] = Larbot.self_module.commands.smash_commands.next_player
 commands["reset"] = Larbot.self_module.commands.smash_commands.reset_list
 commands["line"] = Larbot.self_module.commands.smash_commands.list_entered
 commands["eta"] = Larbot.self_module.commands.smash_commands.eta
+commands["drop"] = Larbot.self_module.commands.smash_commands.drop
+commands["swap"] = Larbot.self_module.commands.smash_commands.swap
 
 if __name__ == "__main__":
     commands["hello"](None, "a")

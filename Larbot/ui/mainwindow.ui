@@ -390,7 +390,7 @@
                <widget class="QWidget" name="widget_8" native="true">
                 <layout class="QVBoxLayout" name="verticalLayout_4">
                  <item>
-                  <widget class="QLineEdit" name="mii_name_line_edit">
+                  <widget class="QLineEdit" name="player_name_line_edit">
                    <property name="font">
                     <font>
                      <family>Myriad Pro</family>
@@ -432,7 +432,7 @@
                   </widget>
                  </item>
                  <item>
-                  <widget class="QLineEdit" name="player_name_line_edit">
+                  <widget class="QLineEdit" name="mii_name_line_edit">
                    <property name="font">
                     <font>
                      <family>Myriad Pro</family>
@@ -484,7 +484,7 @@
                <widget class="QWidget" name="widget_13" native="true">
                 <layout class="QVBoxLayout" name="verticalLayout_2">
                  <item>
-                  <widget class="QListWidget" name="listWidget">
+                  <widget class="QListWidget" name="player_list">
                    <property name="minimumSize">
                     <size>
                      <width>200</width>
@@ -504,7 +504,7 @@
                     <bool>true</bool>
                    </property>
                    <property name="selectionMode">
-                    <enum>QAbstractItemView::NoSelection</enum>
+                    <enum>QAbstractItemView::MultiSelection</enum>
                    </property>
                   </widget>
                  </item>
@@ -514,6 +514,52 @@
                     <string>Reset List (Cannot be cancelled!)</string>
                    </property>
                   </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item>
+               <widget class="QWidget" name="widget_14" native="true">
+                <layout class="QVBoxLayout" name="verticalLayout_3">
+                 <item>
+                  <spacer name="verticalSpacer_5">
+                   <property name="orientation">
+                    <enum>Qt::Vertical</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>20</width>
+                     <height>40</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="remove_button">
+                   <property name="text">
+                    <string>Remove player(s)</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="swap_button">
+                   <property name="text">
+                    <string>Swap players</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <spacer name="verticalSpacer_4">
+                   <property name="orientation">
+                    <enum>Qt::Vertical</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>20</width>
+                     <height>40</height>
+                    </size>
+                   </property>
+                  </spacer>
                  </item>
                 </layout>
                </widget>

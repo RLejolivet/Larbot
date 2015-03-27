@@ -13,6 +13,9 @@ import json
 from Larbot.self_module.message_queue import send_msg, create_msg
 
 
+current_player = "None"
+current_player_lock = threading.Lock()
+
 player_list = []
 player_list_lock = threading.Lock()
 
@@ -28,6 +31,11 @@ line_opened_lock = threading.Lock()
 try:
     with open("save_states/players.json", "rb") as infile:
         json_load = json.loads(infile.read().decode())
+        try:
+            current_player = json_load['current_player']
+        except KeyError:
+            pass
+
         try:
             player_list = json_load['player_list']
         except KeyError:
@@ -48,6 +56,8 @@ except (FileNotFoundError, ValueError):
 
 
 def enter(socket, channel, name, args, qwindow=None):
+    global current_player
+    global current_player_lock
     global player_list
     global player_list_lock
     global player_list_cap
@@ -66,7 +76,9 @@ def enter(socket, channel, name, args, qwindow=None):
         send_msg(socket, ret)
         return
     elif(name not in player_NNID.keys()):
-        player_NNID[name] = {'NNID': args[0], 'Mii name': args[1]}
+        nnid = args[0].replace("<", "").replace(">", "")
+        mii_name = args[1].replace("<", "").replace(">", "")
+        player_NNID[name] = {'NNID': nnid, 'Mii name': mii_name}
     player_NNID_lock.release()
 
     line_opened_lock.acquire()
@@ -107,6 +119,8 @@ def enter(socket, channel, name, args, qwindow=None):
 
 
 def open_list(socket, channel, name, args, qwindow=None):
+    global current_player
+    global current_player_lock
     global player_list
     global player_list_lock
     global player_list_cap
@@ -128,6 +142,8 @@ def open_list(socket, channel, name, args, qwindow=None):
 
 
 def close_list(socket, channel, name, args, qwindow=None):
+    global current_player
+    global current_player_lock
     global player_list
     global player_list_lock
     global player_list_cap
@@ -149,6 +165,8 @@ def close_list(socket, channel, name, args, qwindow=None):
 
 
 def set_cap(socket, channel, name, args, qwindow=None):
+    global current_player
+    global current_player_lock
     global player_list
     global player_list_lock
     global player_list_cap
@@ -194,6 +212,8 @@ def set_cap(socket, channel, name, args, qwindow=None):
 
 
 def next_player(socket, channel, name, args, qwindow=None):
+    global current_player
+    global current_player_lock
     global player_list
     global player_list_lock
     global player_list_cap
@@ -213,16 +233,28 @@ def next_player(socket, channel, name, args, qwindow=None):
             channel,
             "@{:s}: Line is empty!".format(name))
         send_msg(socket, ret)
-        return
-    player_name = player_list.pop(0)
-    if(qwindow is not None):
-        qwindow.set_list(player_list)
-    player_list_lock.release()
+
+        player_name = "None"
+    else:
+        player_name = player_list.pop(0)
+        if(qwindow is not None):
+            qwindow.set_list(player_list)
+        player_list_lock.release()
 
     player_NNID_lock.acquire()
-    nnid = player_NNID[player_name]['NNID']
-    mii_name = player_NNID[player_name]['Mii name']
+    try:
+        nnid = player_NNID[player_name]['NNID']
+    except KeyError:
+        nnid = "???"
+    try:
+        mii_name = player_NNID[player_name]['Mii name']
+    except KeyError:
+        mii_name = "???"
     player_NNID_lock.release()
+
+    current_player_lock.acquire()
+    current_player = player_name
+    current_player_lock.release()
 
     ret = create_msg(
         channel,
@@ -239,6 +271,8 @@ def next_player(socket, channel, name, args, qwindow=None):
 
 
 def reset_list(socket, channel, name, args, qwindow=None):
+    global current_player
+    global current_player_lock
     global player_list
     global player_list_lock
     global player_list_cap
@@ -266,6 +300,8 @@ def reset_list(socket, channel, name, args, qwindow=None):
 
 
 def list_entered(socket, channel, name, args, qwindow=None):
+    global current_player
+    global current_player_lock
     global player_list
     global player_list_lock
     global player_list_cap
@@ -282,11 +318,14 @@ def list_entered(socket, channel, name, args, qwindow=None):
     player_list_lock.release()
     ret = create_msg(
         channel,
-        "Current line: {:s}".format(", ".join(current_list)))
+        "Current player: {:s} Current line: {:s}".format(
+            current_player, ", ".join(current_list)))
     send_msg(socket, ret)
 
 
 def eta(socket, channel, name, args, qwindow=None):
+    global current_player
+    global current_player_lock
     global player_list
     global player_list_lock
     global player_list_cap
@@ -295,6 +334,14 @@ def eta(socket, channel, name, args, qwindow=None):
     global player_NNID_lock
     global line_opened
     global line_opened_lock
+
+    current_player_lock.acquire()
+    if(name == current_player):
+        ret = create_msg(
+            channel,
+            "@{:s}: You are the current player! Go on stream!".format(name))
+        send_msg(socket, ret)
+    current_player_lock.release()
 
     player_list_lock.acquire()
     if(name not in player_list):
@@ -312,7 +359,9 @@ def eta(socket, channel, name, args, qwindow=None):
     send_msg(socket, ret)
 
 
-def save_to_file():
+def drop(socket, channel, name, args, qwindow=None):
+    global current_player
+    global current_player_lock
     global player_list
     global player_list_lock
     global player_list_cap
@@ -322,20 +371,131 @@ def save_to_file():
     global line_opened
     global line_opened_lock
 
+    player_list_lock.acquire()
+    if (name in player_list):
+        player_list.remove(name)
+        if(qwindow is not None):
+            qwindow.set_list(player_list)
+        player_list_lock.release()
+
+        ret = create_msg(
+            channel,
+            "@{:s}: You have been removed from the line!".format(name))
+        send_msg(socket, ret)
+    else:
+        player_list_lock.release()
+        ret = create_msg(
+            channel,
+            "@{:s}: You were not in the line!".format(name))
+        send_msg(socket, ret)
+
+
+def swap(socket, channel, name, args, qwindow=None):
+    global current_player
+    global current_player_lock
+    global player_list
+    global player_list_lock
+    global player_list_cap
+    global player_list_cap_lock
+    global player_NNID
+    global player_NNID_lock
+    global line_opened
+    global line_opened_lock
+
+    if(name != channel or len(args) < 2):
+        return
+
+    name1 = args[0]
+    name2 = args[1]
+
+    player_list_lock.acquire()
+    if(name1 not in player_list or name2 not in player_list):
+        player_list_lock.release()
+        return
+
+    index1 = player_list.index(name1)
+    index2 = player_list.index(name2)
+
+    player_list[index1], player_list[index2] = \
+        player_list[index2], player_list[index1]
+    if(qwindow is not None):
+        qwindow.set_list(player_list)
+    player_list_lock.release()
+
+    ret = create_msg(
+        channel,
+        "@{:s}: {:s} and {:s} have exchanged position in the line!".format(
+            name, name1, name2))
+    send_msg(socket, ret)
+
+
+def load(qwindow):
+    global current_player
+    global current_player_lock
+    global player_list
+    global player_list_lock
+    global player_list_cap
+    global player_list_cap_lock
+    global player_NNID
+    global player_NNID_lock
+    global line_opened
+    global line_opened_lock
+
+    # Setting current player info
+    current_player_lock.acquire()
+    player_name = current_player
+    current_player_lock.release()
+
+    player_NNID_lock.acquire()
+    try:
+        nnid = player_NNID[player_name]['NNID']
+    except KeyError:
+        nnid = "???"
+    try:
+        mii_name = player_NNID[player_name]['Mii name']
+    except KeyError:
+        mii_name = "???"
+    player_NNID_lock.release()
+
+    qwindow.player_name_line_edit.setText(player_name)
+    qwindow.player_NNID_line_edit.setText(nnid)
+    qwindow.mii_name_line_edit.setText(mii_name)
+
+    # Setting line info
+    player_list_lock.acquire()
+    qwindow.set_list(player_list)
+    player_list_lock.release()
+
+
+def save_to_file():
+    global current_player
+    global current_player_lock
+    global player_list
+    global player_list_lock
+    global player_list_cap
+    global player_list_cap_lock
+    global player_NNID
+    global player_NNID_lock
+    global line_opened
+    global line_opened_lock
+
+    current_player_lock.acquire()
     player_list_cap_lock.acquire()
     player_list_lock.acquire()
     player_NNID_lock.acquire()
 
     save_dict = {
+        'current_player': current_player,
         'player_list': player_list,
         'player_list_cap': player_list_cap,
         'player_NNID': player_NNID
-        }
+    }
 
     try:
         with open("save_states/players.json", "wb") as outfile:
             outfile.write(json.dumps(save_dict, indent=4).encode())
     finally:
+        current_player_lock.release()
         player_list_cap_lock.release()
         player_list_lock.release()
         player_NNID_lock.release()

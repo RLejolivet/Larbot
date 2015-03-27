@@ -15,11 +15,12 @@ import struct
 import PySide
 from PySide import QtCore
 from PySide.QtGui import QApplication, QMainWindow, QTextEdit,\
-                         QPushButton,  QMessageBox
+    QPushButton,  QMessageBox
 
 
 import Larbot.larbot
 from Larbot.self_module.commands_manager import run
+from Larbot.self_module.commands.smash_commands import load as load_ui
 from Larbot.ui.ui_mainwindow import Ui_MainWindow
 
 
@@ -30,6 +31,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setupUi(self)
+        self.tabWidget.setCurrentIndex(0)
         self.actionAbout.triggered.connect(self.about)
         self.connect_button.clicked.connect(self.connect)
         self.statusbar.showMessage("Not Connected")
@@ -39,6 +41,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.reset_line_button.clicked.connect(self.reset)
         self.entrants_cap_spinbox.editingFinished.connect(self.setcap)
         self.actionNoLogin.triggered.connect(self.login_failure_slot)
+        self.remove_button.clicked.connect(self.remove_player)
+        self.swap_button.clicked.connect(self.swap_players)
 
     def about(self):
         '''Popup a box with about message.'''
@@ -71,7 +75,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             'nick': bot_name,
             'oauth': oauth,
             'channel': channel
-            }
+        }
 
         with open("save_states/config.json.bin", "wb") as outfile:
             outfile.write(json.dumps(save_dict, indent=4).encode())
@@ -89,7 +93,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             "    - Connect with Twitch\n"
             "    - Accept\n"
             "    - Copy and paste the OAuth given in the box\n"
-            )
+        )
 
     def next(self):
         channel = self.channel_line_edit.text().lower()
@@ -112,9 +116,27 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         run('setcap', Larbot.larbot.s, channel, channel, [value], self)
 
     def set_list(self, new_list):
-        while(self.listWidget.count() > 0):
-            self.listWidget.takeItem(0)
-        self.listWidget.addItems(new_list)
+        while(self.player_list.count() > 0):
+            self.player_list.takeItem(0)
+        self.player_list.addItems(new_list)
+
+    def remove_player(self):
+        channel = self.channel_line_edit.text().lower()
+        players = self.player_list.selectedIndexes()
+        if(len(players) == 0):
+            return
+
+        for player in players:
+            run('drop', Larbot.larbot.s, channel, player.data(), [], self)
+
+    def swap_players(self):
+        channel = self.channel_line_edit.text().lower()
+        players = self.player_list.selectedIndexes()
+        if(len(players) != 2):
+            return
+
+        run('swap', Larbot.larbot.s, channel, channel,
+            [players[0].data(), players[1].data()], self)
 
     def login_failure_slot(self):
         QMessageBox.about(
@@ -122,13 +144,14 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             "Login failure",
             "Login attempt failed.\n"
             "Make sure the bot name, oauth are correct"
-            )
+        )
         self.statusbar.showMessage("Not Connected")
 
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     frame = MainWindow()
+    load_ui(frame)
     frame.show()
 
     try:
