@@ -15,7 +15,7 @@ from Larbot.self_module.message_queue import send_msg, create_msg
 import Larbot.self_module.commands.smash_commands
 
 
-def run(command, socket, channel, name, args, qwindow=None):
+def run(command, socket, channel, name, args, qwindow):
     if(socket is None):
         if(qwindow is not None):
             qwindow.not_connected()
@@ -26,7 +26,6 @@ def run(command, socket, channel, name, args, qwindow=None):
         'channel': channel,
         'name': name,
         'args': args,
-        'qwindow': qwindow
     }
     if(command in commands.keys()):
         t = threading.Thread(target=commands[command], kwargs=kwargs)
@@ -34,7 +33,7 @@ def run(command, socket, channel, name, args, qwindow=None):
         t.start()
 
 
-def hello(socket, channel, name, args, qwindow=None):
+def hello(socket, channel, name, args):
     if len(args) == 0:
         reply = create_msg(channel, "Hello {:s}!".format(name))
     else:
@@ -42,9 +41,10 @@ def hello(socket, channel, name, args, qwindow=None):
     send_msg(socket, reply)
 
 
-def print_commands(socket, channel, name, args, qwindow=None):
+def print_commands(socket, channel, name, args):
     global commands
-    ret = create_msg(channel, ", ".join(sorted(list(commands.keys()))))
+    ret = create_msg(channel, "Available commands: " +
+                     ", ".join(sorted(list(commands.keys()))))
     send_msg(socket, ret)
 
 commands = dict()
@@ -56,9 +56,13 @@ commands["setcap"] = Larbot.self_module.commands.smash_commands.set_cap
 commands["next"] = Larbot.self_module.commands.smash_commands.next_player
 commands["reset"] = Larbot.self_module.commands.smash_commands.reset_list
 commands["line"] = Larbot.self_module.commands.smash_commands.list_entered
+commands["list"] = Larbot.self_module.commands.smash_commands.list_entered
 commands["eta"] = Larbot.self_module.commands.smash_commands.eta
 commands["drop"] = Larbot.self_module.commands.smash_commands.drop
 commands["swap"] = Larbot.self_module.commands.smash_commands.swap
+commands["remove"] = Larbot.self_module.commands.smash_commands.remove
+commands["move"] = Larbot.self_module.commands.smash_commands.move
+commands["add"] = Larbot.self_module.commands.smash_commands.add
 
 if __name__ == "__main__":
     commands["hello"](None, "a")

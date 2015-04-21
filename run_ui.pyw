@@ -22,6 +22,7 @@ import Larbot.larbot
 from Larbot.self_module.commands_manager import run
 from Larbot.self_module.commands.smash_commands import load as load_ui
 from Larbot.ui.ui_mainwindow import Ui_MainWindow
+from Larbot.self_module.commands.user_priviledge import add_mod
 
 
 class MainWindow(QMainWindow, Ui_MainWindow):
@@ -71,6 +72,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         oauth = self.bot_oauth_line_edit.text()
         channel = self.channel_line_edit.text()
 
+        add_mod(channel)
+
         save_dict = {
             'nick': bot_name,
             'oauth': oauth,
@@ -101,6 +104,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     def open_line(self, switch):
         channel = self.channel_line_edit.text().lower()
+        type(self.open_line_checkbox.checkState())
         if(switch):
             run('open', Larbot.larbot.s, channel, channel, [], self)
         else:
@@ -146,6 +150,19 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             "Make sure the bot name, oauth are correct"
         )
         self.statusbar.showMessage("Not Connected")
+
+    def update_line_opened(self, is_open):
+        if(is_open):
+            self.open_line_checkbox.setCheckState(
+                PySide.QtCore.Qt.CheckState.Checked)
+        else:
+            self.open_line_checkbox.setCheckState(
+                PySide.QtCore.Qt.CheckState.Unchecked)
+
+    def update_line_cap(self, new_cap):
+        if(new_cap is None):
+            new_cap = 0
+        self.entrants_cap_spinbox.setValue(new_cap)
 
 
 if __name__ == '__main__':

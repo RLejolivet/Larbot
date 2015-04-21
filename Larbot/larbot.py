@@ -14,6 +14,7 @@ from PySide.QtGui import QMessageBox
 
 
 from Larbot.self_module.commands_manager import run
+from Larbot.self_module.commands.user_priviledge import add_mod
 
 # IRC connection data
 HOST = "irc.twitch.tv"  # This is the Twitch IRC ip, don't change it.
@@ -72,7 +73,7 @@ def main(nick, oauth, channel, qwindow=None):
         while (1):
             # Receiving data from IRC and spitting it into manageable lines.
             try:
-                readbuffer = readbuffer+s.recv(1024).decode()
+                readbuffer = readbuffer + s.recv(1024).decode()
             except ConnectionAbortedError:
                 print("\nQuitting...")
                 return
@@ -89,27 +90,36 @@ def main(nick, oauth, channel, qwindow=None):
             for line in temp:
                 line = str.split(line, " ")
 
-                # Checks if the first character is a !, for commands.
-                if len(line) >= 4 and (line[3][0:2] == ":!"):
-                    QUERIED_COMMAND = line[3][2:].lower()
-                    CHANNEL = line[2][1:].lower()
-                    NAME = line[0].split("!")[0][1:].lower()
-                    print(CHANNEL, NAME, QUERIED_COMMAND, line[4:])
-
-                    # Checks what command was queried.
-                    run(QUERIED_COMMAND, s, CHANNEL, NAME, line[4:], qwindow)
-
-                # Checks if it's a login unsuccessful message
+                # For server admin messages:
                 if (len(line) >= 5 and
-                        line[3] == ":Login" and
-                        line[4] == "unsuccessful"):
-                    time.sleep(1)
-                    if(qwindow is not None):
-                        qwindow.actionNoLogin.trigger()
-                    else:
-                        print("Login unsuccessful")
-                    s = None
-                    return
+                        line[0] == ":jtv" and
+                        line[1] == "MODE" and
+                        line[3] == "+o"):
+                    add_mod(line[4])
+
+                # For private messages:
+                if len(line) >= 3 and line[1] == "PRIVMSG":
+                    # Checks if the first character is a !, for commands.
+                    if len(line) >= 4 and (line[3][0:2] == ":!"):
+                        COMMAND = line[3][2:].lower()
+                        CHANNEL = line[2][1:].lower()
+                        NAME = line[0].split("!")[0][1:].lower()
+                        print(CHANNEL, NAME, COMMAND, line[4:])
+
+                        # Checks what command was queried.
+                        run(COMMAND, s, CHANNEL, NAME, line[4:], qwindow)
+
+                    # Checks if it's a login unsuccessful message
+                    if (len(line) >= 5 and
+                            line[3] == ":Login" and
+                            line[4] == "unsuccessful"):
+                        time.sleep(1)
+                        if(qwindow is not None):
+                            qwindow.actionNoLogin.trigger()
+                        else:
+                            print("Login unsuccessful")
+                        s = None
+                        return
 
                 # IRC checks connectiond with ping.
                 # Every ping has to be replied to with a Pong.
@@ -136,7 +146,7 @@ def _start(nick, oauth, channel, qwindow=None):
         'oauth': oauth,
         'channel': channel,
         'qwindow': qwindow
-        }
+    }
     t = threading.Thread(target=main, kwargs=kwargs)
     t.setDaemon(qwindow is not None)
     t.start()
