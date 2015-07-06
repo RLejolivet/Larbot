@@ -58,6 +58,7 @@ commands["line"] = Larbot.self_module.commands.smash_commands.list_entered
 commands["list"] = Larbot.self_module.commands.smash_commands.list_entered
 commands["eta"] = Larbot.self_module.commands.smash_commands.eta
 commands["drop"] = Larbot.self_module.commands.smash_commands.drop
+commands["leave"] = Larbot.self_module.commands.smash_commands.drop
 commands["swap"] = Larbot.self_module.commands.smash_commands.swap
 commands["remove"] = Larbot.self_module.commands.smash_commands.remove
 commands["move"] = Larbot.self_module.commands.smash_commands.move
