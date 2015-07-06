@@ -29,6 +29,9 @@ player_NNID_lock = threading.Lock()
 line_opened = False
 line_opened_lock = threading.Lock()
 
+subs_only = False
+subs_only_lock = threading.Lock()
+
 qwindow = None
 
 try:
@@ -69,6 +72,8 @@ def enter(socket, channel, name, args, tags={}):
     global player_NNID_lock
     global line_opened
     global line_opened_lock
+    global subs_only
+    global subs_only_lock
     global qwindow
 
     player_NNID_lock.acquire()
@@ -105,6 +110,20 @@ def enter(socket, channel, name, args, tags={}):
     player_list_cap_lock.release()
     player_list_lock.release()
 
+    subs_only_lock.acquire()
+    if(subs_only and not
+       (tags.get('subscriber', False) or
+            tags.get('user-type', user_type.empty) != user_type.empty)):
+        subs_only_lock.release()
+        ret = create_msg(
+            channel,
+            "@{:s}: Line is currently subscribers only! "
+            "You can subscribe at http://twitch.tv/{:s}/subscribe".format(
+                name, channel))
+        send_msg(socket, ret)
+        return
+    subs_only_lock.release()
+
     player_list_lock.acquire()
     if(name not in player_list):
         player_list.append(name)
@@ -134,6 +153,8 @@ def add(socket, channel, name, args, tags={}):
     global player_NNID_lock
     global line_opened
     global line_opened_lock
+    global subs_only
+    global subs_only_lock
     global qwindow
 
     if(not (name == channel or
@@ -200,6 +221,8 @@ def open_list(socket, channel, name, args, tags={}):
     global player_NNID_lock
     global line_opened
     global line_opened_lock
+    global subs_only
+    global subs_only_lock
     global qwindow
 
     if(not (name == channel or
@@ -228,6 +251,8 @@ def close_list(socket, channel, name, args, tags={}):
     global player_NNID_lock
     global line_opened
     global line_opened_lock
+    global subs_only
+    global subs_only_lock
     global qwindow
 
     if(not (name == channel or
@@ -256,6 +281,8 @@ def set_cap(socket, channel, name, args, tags={}):
     global player_NNID_lock
     global line_opened
     global line_opened_lock
+    global subs_only
+    global subs_only_lock
     global qwindow
 
     if(not (name == channel or
@@ -308,6 +335,8 @@ def next_player(socket, channel, name, args, tags={}):
     global player_NNID_lock
     global line_opened
     global line_opened_lock
+    global subs_only
+    global subs_only_lock
     global qwindow
 
     if(not (name == channel or
@@ -369,6 +398,8 @@ def reset_list(socket, channel, name, args, tags={}):
     global player_NNID_lock
     global line_opened
     global line_opened_lock
+    global subs_only
+    global subs_only_lock
     global qwindow
 
     if(name != channel):
@@ -399,6 +430,8 @@ def list_entered(socket, channel, name, args, tags={}):
     global player_NNID_lock
     global line_opened
     global line_opened_lock
+    global subs_only
+    global subs_only_lock
     global qwindow
 
     current_list = []
@@ -424,6 +457,8 @@ def eta(socket, channel, name, args, tags={}):
     global player_NNID_lock
     global line_opened
     global line_opened_lock
+    global subs_only
+    global subs_only_lock
     global qwindow
 
     current_player_lock.acquire()
@@ -461,6 +496,8 @@ def drop(socket, channel, name, args, tags={}):
     global player_NNID_lock
     global line_opened
     global line_opened_lock
+    global subs_only
+    global subs_only_lock
     global qwindow
 
     player_list_lock.acquire()
@@ -495,6 +532,8 @@ def swap(socket, channel, name, args, tags={}):
     global player_NNID_lock
     global line_opened
     global line_opened_lock
+    global subs_only
+    global subs_only_lock
     global qwindow
 
     if(not (name == channel or
@@ -544,6 +583,8 @@ def remove(socket, channel, name, args, tags={}):
     global player_NNID_lock
     global line_opened
     global line_opened_lock
+    global subs_only
+    global subs_only_lock
     global qwindow
 
     if(not (name == channel or
@@ -570,6 +611,8 @@ def move(socket, channel, name, args, tags={}):
     global player_NNID_lock
     global line_opened
     global line_opened_lock
+    global subs_only
+    global subs_only_lock
     global qwindow
 
     if(not (name == channel or
@@ -621,6 +664,57 @@ def move(socket, channel, name, args, tags={}):
     save_to_file()
 
 
+def subs_only(socket, channel, name, args, tags={}):
+    global current_player
+    global current_player_lock
+    global player_list
+    global player_list_lock
+    global player_list_cap
+    global player_list_cap_lock
+    global player_NNID
+    global player_NNID_lock
+    global line_opened
+    global line_opened_lock
+    global subs_only
+    global subs_only_lock
+    global qwindow
+
+    if(not (name == channel or
+            tags.get('user-type', user_type.empty) == user_type.mod)):
+        return
+
+    if(len(args) < 1):
+        ret = create_msg(channel,
+                         "@{:s}: Usage: !subsonly <ON/OFF>".format(name))
+        send_msg(socket, ret)
+        return
+
+    if(args[0].lower() in ["on", "yes", "y", "true", "1"]):
+        subs = True
+    elif(args[0].lower() in ["off", "no", "n", "false", "0"]):
+        subs = False
+    else:
+        ret = create_msg(channel,
+                         "@{:s}: Usage: !subsonly <ON/OFF>".format(name))
+        send_msg(socket, ret)
+        return
+
+    subs_only_lock.acquire()
+    subs_only = subs
+    subs_only_lock.release()
+
+    if(qwindow is not None):
+        qwindow.update_subs_only(subs)
+
+    if(subs):
+        ret = create_msg(
+            channel, "@{:s}: Line is now subs-only!".format(name))
+    else:
+        ret = create_msg(
+            channel, "@{:s}: Line is no longer subs-only!".format(name))
+    send_msg(socket, ret)
+
+
 def load(qmain_window):
     global current_player
     global current_player_lock
@@ -632,6 +726,8 @@ def load(qmain_window):
     global player_NNID_lock
     global line_opened
     global line_opened_lock
+    global subs_only
+    global subs_only_lock
     global qwindow
 
     qwindow = qmain_window
@@ -678,6 +774,8 @@ def save_to_file():
     global player_NNID_lock
     global line_opened
     global line_opened_lock
+    global subs_only
+    global subs_only_lock
     global qwindow
 
     current_player_lock.acquire()

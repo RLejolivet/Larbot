@@ -39,6 +39,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.bot_oauth_help_button.clicked.connect(self.oauth_help)
         self.next_button.clicked.connect(self.next)
         self.open_line_checkbox.toggled.connect(self.open_line)
+        self.subscriber_checkbox.toggled.connect(self.subs_only)
         self.reset_line_button.clicked.connect(self.reset)
         self.entrants_cap_spinbox.editingFinished.connect(self.setcap)
         self.actionNoLogin.triggered.connect(self.login_failure_slot)
@@ -110,6 +111,14 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         else:
             run('close', Larbot.larbot.s, channel, channel, [], self)
 
+    def subs_only(self, switch):
+        channel = self.channel_line_edit.text().lower()
+        type(self.open_line_checkbox.checkState())
+        if(switch):
+            run('subsonly', Larbot.larbot.s, channel, channel, ["on"], self)
+        else:
+            run('subsonly', Larbot.larbot.s, channel, channel, ["off"], self)
+
     def reset(self):
         channel = self.channel_line_edit.text().lower()
         run('reset', Larbot.larbot.s, channel, channel, [], self)
@@ -157,6 +166,14 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 PySide.QtCore.Qt.CheckState.Checked)
         else:
             self.open_line_checkbox.setCheckState(
+                PySide.QtCore.Qt.CheckState.Unchecked)
+
+    def update_subs_only(self, is_open):
+        if(is_open):
+            self.subscriber_checkbox.setCheckState(
+                PySide.QtCore.Qt.CheckState.Checked)
+        else:
+            self.subscriber_checkbox.setCheckState(
                 PySide.QtCore.Qt.CheckState.Unchecked)
 
     def update_line_cap(self, new_cap):

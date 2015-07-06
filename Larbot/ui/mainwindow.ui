@@ -613,7 +613,7 @@
                     <item>
                      <widget class="QCheckBox" name="subscriber_checkbox">
                       <property name="text">
-                       <string>Subscriber only (doesn't work for now)</string>
+                       <string>Subscriber only</string>
                       </property>
                      </widget>
                     </item>

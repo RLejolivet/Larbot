@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'mainwindow.ui'
 #
-# Created: Sat Mar 28 00:03:45 2015
+# Created: Mon Jul  6 23:42:24 2015
 #      by: pyside-uic 0.2.15 running on PySide 1.2.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -356,7 +356,7 @@ class Ui_MainWindow(object):
         self.swap_button.setText(QtGui.QApplication.translate("MainWindow", "Swap players", None, QtGui.QApplication.UnicodeUTF8))
         self.open_line_checkbox.setText(QtGui.QApplication.translate("MainWindow", "Open line", None, QtGui.QApplication.UnicodeUTF8))
         self.label_4.setText(QtGui.QApplication.translate("MainWindow", "Line entrants cap (0 for no cap):", None, QtGui.QApplication.UnicodeUTF8))
-        self.subscriber_checkbox.setText(QtGui.QApplication.translate("MainWindow", "Subscriber only (doesn\'t work for now)", None, QtGui.QApplication.UnicodeUTF8))
+        self.subscriber_checkbox.setText(QtGui.QApplication.translate("MainWindow", "Subscriber only", None, QtGui.QApplication.UnicodeUTF8))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.bot_info), QtGui.QApplication.translate("MainWindow", "Bot Info", None, QtGui.QApplication.UnicodeUTF8))
         self.menuFile.setTitle(QtGui.QApplication.translate("MainWindow", "File", None, QtGui.QApplication.UnicodeUTF8))
         self.menuAbout.setTitle(QtGui.QApplication.translate("MainWindow", "About", None, QtGui.QApplication.UnicodeUTF8))
