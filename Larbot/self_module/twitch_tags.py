@@ -29,8 +29,8 @@ def get_tags(string):
     tags = dict({(x.split("=")[0], x.split("=")[1])
                  for x in string.split(";")})
 
-    tags['subscriber'] = bool(tags['subscriber'])
-    tags['turbo'] = bool(tags['turbo'])
+    tags['subscriber'] = bool(int(tags['subscriber']))
+    tags['turbo'] = bool(int(tags['turbo']))
     tags['user-type'] = user_type(tags['user-type'])
 
     return tags
