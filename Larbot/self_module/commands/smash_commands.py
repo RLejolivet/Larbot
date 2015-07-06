@@ -58,7 +58,7 @@ except (FileNotFoundError, ValueError):
     pass
 
 
-def enter(socket, channel, name, args):
+def enter(socket, channel, name, args, tags={}):
     global current_player
     global current_player_lock
     global player_list
@@ -123,7 +123,7 @@ def enter(socket, channel, name, args):
     save_to_file()
 
 
-def add(socket, channel, name, args):
+def add(socket, channel, name, args, tags={}):
     global current_player
     global current_player_lock
     global player_list
@@ -188,7 +188,7 @@ def add(socket, channel, name, args):
     save_to_file()
 
 
-def open_list(socket, channel, name, args):
+def open_list(socket, channel, name, args, tags={}):
     global current_player
     global current_player_lock
     global player_list
@@ -215,7 +215,7 @@ def open_list(socket, channel, name, args):
     send_msg(socket, ret)
 
 
-def close_list(socket, channel, name, args):
+def close_list(socket, channel, name, args, tags={}):
     global current_player
     global current_player_lock
     global player_list
@@ -242,7 +242,7 @@ def close_list(socket, channel, name, args):
     send_msg(socket, ret)
 
 
-def set_cap(socket, channel, name, args):
+def set_cap(socket, channel, name, args, tags={}):
     global current_player
     global current_player_lock
     global player_list
@@ -293,7 +293,7 @@ def set_cap(socket, channel, name, args):
     save_to_file()
 
 
-def next_player(socket, channel, name, args):
+def next_player(socket, channel, name, args, tags={}):
     global current_player
     global current_player_lock
     global player_list
@@ -353,7 +353,7 @@ def next_player(socket, channel, name, args):
     save_to_file()
 
 
-def reset_list(socket, channel, name, args):
+def reset_list(socket, channel, name, args, tags={}):
     global current_player
     global current_player_lock
     global player_list
@@ -383,7 +383,7 @@ def reset_list(socket, channel, name, args):
     save_to_file()
 
 
-def list_entered(socket, channel, name, args):
+def list_entered(socket, channel, name, args, tags={}):
     global current_player
     global current_player_lock
     global player_list
@@ -408,7 +408,7 @@ def list_entered(socket, channel, name, args):
     send_msg(socket, ret)
 
 
-def eta(socket, channel, name, args):
+def eta(socket, channel, name, args, tags={}):
     global current_player
     global current_player_lock
     global player_list
@@ -445,7 +445,7 @@ def eta(socket, channel, name, args):
     send_msg(socket, ret)
 
 
-def drop(socket, channel, name, args):
+def drop(socket, channel, name, args, tags={}):
     global current_player
     global current_player_lock
     global player_list
@@ -479,7 +479,7 @@ def drop(socket, channel, name, args):
     save_to_file()
 
 
-def swap(socket, channel, name, args):
+def swap(socket, channel, name, args, tags={}):
     global current_player
     global current_player_lock
     global player_list
@@ -495,8 +495,8 @@ def swap(socket, channel, name, args):
     if(not check_mod(name) or len(args) < 2):
         return
 
-    name1 = args[0]
-    name2 = args[1]
+    name1 = args[0].lower()
+    name2 = args[1].lower()
 
     player_list_lock.acquire()
     if(name1 not in player_list or name2 not in player_list):
@@ -521,7 +521,7 @@ def swap(socket, channel, name, args):
     save_to_file()
 
 
-def remove(socket, channel, name, args):
+def remove(socket, channel, name, args, tags={}):
     global current_player
     global current_player_lock
     global player_list
@@ -537,10 +537,10 @@ def remove(socket, channel, name, args):
     if(not check_mod(name) or len(args) < 1):
         return
 
-    drop(socket, channel, args[0], [])
+    drop(socket, channel, args[0].lower(), [])
 
 
-def move(socket, channel, name, args):
+def move(socket, channel, name, args, tags={}):
     global current_player
     global current_player_lock
     global player_list
@@ -556,7 +556,7 @@ def move(socket, channel, name, args):
     if(not check_mod(name) or len(args) < 2):
         return
 
-    player_name = args[0]
+    player_name = args[0].lower()
     try:
         new_position = int(args[1]) - 1
         if(new_position < 0):

@@ -12,9 +12,9 @@ import threading
 
 from PySide.QtGui import QMessageBox
 
-
 from Larbot.self_module.commands_manager import run
 from Larbot.self_module.commands.user_priviledge import add_mod
+from Larbot.self_module.twitch_tags import get_tags
 
 # IRC connection data
 HOST = "irc.twitch.tv"  # This is the Twitch IRC ip, don't change it.
@@ -57,6 +57,7 @@ def connect(nick, oauth, channel, qwindow=None):
     s.send("NICK {0}\r\n".format(nick.lower()).encode())
     s.send("USER {0} {1} bla :{2}\r\n".format(
         nick, HOST, nick + " Bot").encode())
+    s.send("CAP REQ :twitch.tv/tags\r\n".encode())
     # Connecting to the channel.
     s.send("JOIN #{0}\r\n".format(channel.lower().replace("#", "")).encode())
     if(qwindow is not None):
@@ -98,16 +99,18 @@ def main(nick, oauth, channel, qwindow=None):
                     add_mod(line[4])
 
                 # For private messages:
-                if len(line) >= 3 and line[1] == "PRIVMSG":
+                if len(line) >= 5 and line[2] == "PRIVMSG":
                     # Checks if the first character is a !, for commands.
-                    if len(line) >= 4 and (line[3][0:2] == ":!"):
-                        COMMAND = line[3][2:].lower()
-                        CHANNEL = line[2][1:].lower()
-                        NAME = line[0].split("!")[0][1:].lower()
-                        print(CHANNEL, NAME, COMMAND, line[4:])
+                    if len(line) >= 4 and (line[4][0:2] == ":!"):
+                        TAGS = get_tags(line[0])
+                        COMMAND = line[4][2:].lower()
+                        CHANNEL = line[3][1:].lower()
+                        NAME = line[1].split("!")[0][1:].lower()
+                        print(TAGS, CHANNEL, NAME, COMMAND, line[5:])
 
                         # Checks what command was queried.
-                        run(COMMAND, s, CHANNEL, NAME, line[4:], qwindow)
+                        run(COMMAND, s, CHANNEL, NAME,
+                            line[5:], qwindow, tags=TAGS)
 
                     # Checks if it's a login unsuccessful message
                     if (len(line) >= 5 and

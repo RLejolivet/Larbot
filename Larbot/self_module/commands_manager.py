@@ -8,14 +8,12 @@ Created on 2015-03-15
 
 
 import threading
-import time
-
 
 from Larbot.self_module.message_queue import send_msg, create_msg
 import Larbot.self_module.commands.smash_commands
 
 
-def run(command, socket, channel, name, args, qwindow):
+def run(command, socket, channel, name, args, qwindow, tags={}):
     if(socket is None):
         if(qwindow is not None):
             qwindow.not_connected()
@@ -26,6 +24,7 @@ def run(command, socket, channel, name, args, qwindow):
         'channel': channel,
         'name': name,
         'args': args,
+        'tags': tags
     }
     if(command in commands.keys()):
         t = threading.Thread(target=commands[command], kwargs=kwargs)
@@ -41,7 +40,7 @@ def hello(socket, channel, name, args):
     send_msg(socket, reply)
 
 
-def print_commands(socket, channel, name, args):
+def print_commands(socket, channel, name, args, qwindow=None, tags={}):
     global commands
     ret = create_msg(channel, "Available commands: " +
                      ", ".join(sorted(list(commands.keys()))))
