@@ -6,7 +6,7 @@ Created on 2015-03-17
 @author: Raph
 """
 
-
+import os
 import sys
 import platform
 import json
@@ -187,6 +187,9 @@ if __name__ == '__main__':
     frame = MainWindow()
     load_ui(frame)
     frame.show()
+
+    if(not os.path.isdir("save_states")):
+        os.mkdir("save_states")
 
     try:
         with open("save_states/config.json.bin", "rb") as infile:
