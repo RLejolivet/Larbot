@@ -11,7 +11,7 @@ import json
 
 
 from Larbot.self_module.message_queue import send_msg, create_msg
-from Larbot.self_module.commands.user_priviledge import check_mod
+from Larbot.self_module.twitch_tags import user_type
 
 
 current_player = "None"
@@ -136,7 +136,8 @@ def add(socket, channel, name, args, tags={}):
     global line_opened_lock
     global qwindow
 
-    if(not check_mod(name)):
+    if(not (name == channel or
+            tags.get('user-type', user_type.empty) == user_type.mod)):
         return
 
     if(len(args) < 1):
@@ -201,7 +202,8 @@ def open_list(socket, channel, name, args, tags={}):
     global line_opened_lock
     global qwindow
 
-    if(not check_mod(name)):
+    if(not (name == channel or
+            tags.get('user-type', user_type.empty) == user_type.mod)):
         return
 
     line_opened_lock.acquire()
@@ -228,7 +230,8 @@ def close_list(socket, channel, name, args, tags={}):
     global line_opened_lock
     global qwindow
 
-    if(not check_mod(name)):
+    if(not (name == channel or
+            tags.get('user-type', user_type.empty) == user_type.mod)):
         return
 
     if(qwindow is not None):
@@ -255,7 +258,8 @@ def set_cap(socket, channel, name, args, tags={}):
     global line_opened_lock
     global qwindow
 
-    if(not check_mod(name)):
+    if(not (name == channel or
+            tags.get('user-type', user_type.empty) == user_type.mod)):
         return
 
     if(len(args) < 1):
@@ -306,7 +310,8 @@ def next_player(socket, channel, name, args, tags={}):
     global line_opened_lock
     global qwindow
 
-    if(not check_mod(name)):
+    if(not (name == channel or
+            tags.get('user-type', user_type.empty) == user_type.mod)):
         return
 
     player_list_lock.acquire()
@@ -492,7 +497,14 @@ def swap(socket, channel, name, args, tags={}):
     global line_opened_lock
     global qwindow
 
-    if(not check_mod(name) or len(args) < 2):
+    if(not (name == channel or
+            tags.get('user-type', user_type.empty) == user_type.mod)):
+        return
+
+    if(len(args) < 2):
+        ret = create_msg(
+            channel, "@{:s}: Usage: !swap <player1> <player2>".format(name))
+        send_msg(socket, ret)
         return
 
     name1 = args[0].lower()
@@ -534,7 +546,14 @@ def remove(socket, channel, name, args, tags={}):
     global line_opened_lock
     global qwindow
 
-    if(not check_mod(name) or len(args) < 1):
+    if(not (name == channel or
+            tags.get('user-type', user_type.empty) == user_type.mod)):
+        return
+
+    if(len(args) < 1):
+        ret = create_msg(
+            channel, "@{:s}: Usage: !remove <player>".format(name))
+        send_msg(socket, ret)
         return
 
     drop(socket, channel, args[0].lower(), [])
@@ -553,7 +572,15 @@ def move(socket, channel, name, args, tags={}):
     global line_opened_lock
     global qwindow
 
-    if(not check_mod(name) or len(args) < 2):
+    if(not (name == channel or
+            tags.get('user-type', user_type.empty) == user_type.mod)):
+        return
+
+    if(len(args) < 2):
+        ret = create_msg(channel,
+                         "@{:s}: Usage: !move <player> <position>. "
+                         "Example: !move bob 1".format(name))
+        send_msg(socket, ret)
         return
 
     player_name = args[0].lower()
