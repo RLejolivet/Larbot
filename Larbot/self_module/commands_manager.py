@@ -63,7 +63,7 @@ commands["swap"] = Larbot.self_module.commands.smash_commands.swap
 commands["remove"] = Larbot.self_module.commands.smash_commands.remove
 commands["move"] = Larbot.self_module.commands.smash_commands.move
 commands["add"] = Larbot.self_module.commands.smash_commands.add
-commands["subsonly"] = Larbot.self_module.commands.smash_commands.subs_only
+commands["subsonly"] = Larbot.self_module.commands.smash_commands.set_subs_only
 
 if __name__ == "__main__":
     commands["hello"](None, "a")

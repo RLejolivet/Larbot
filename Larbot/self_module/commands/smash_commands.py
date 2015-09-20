@@ -664,7 +664,7 @@ def move(socket, channel, name, args, tags={}):
     save_to_file()
 
 
-def subs_only(socket, channel, name, args, tags={}):
+def set_subs_only(socket, channel, name, args, tags={}):
     global current_player
     global current_player_lock
     global player_list

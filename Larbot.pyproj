@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{0b3260bd-37af-405e-862e-23139ef77764}</ProjectGuid>
+    <ProjectHome />
+    <StartupFile>run_ui.pyw</StartupFile>
+    <SearchPath />
+    <WorkingDirectory>.</WorkingDirectory>
+    <OutputPath>.</OutputPath>
+    <ProjectTypeGuids>{888888a0-9f3d-457c-b088-3a5042f75d52}</ProjectTypeGuids>
+    <LaunchProvider>Standard Python launcher</LaunchProvider>
+    <InterpreterId />
+    <InterpreterVersion />
+    <IsWindowsApplication>False</IsWindowsApplication>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
+  <PropertyGroup>
+    <VisualStudioVersion Condition=" '$(VisualStudioVersion)' == '' ">10.0</VisualStudioVersion>
+    <PtvsTargetsFile>$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets</PtvsTargetsFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="base.py" />
+    <Compile Include="functional_hello_world.py" />
+    <Compile Include="Larbot\larbot.py" />
+    <Compile Include="Larbot\self_module\commands\smash_commands.py" />
+    <Compile Include="Larbot\self_module\commands\user_priviledge.py" />
+    <Compile Include="Larbot\self_module\commands\__init__.py" />
+    <Compile Include="Larbot\self_module\commands_manager.py" />
+    <Compile Include="Larbot\self_module\connection_manager.py" />
+    <Compile Include="Larbot\self_module\message_queue.py" />
+    <Compile Include="Larbot\self_module\twitch_tags.py" />
+    <Compile Include="Larbot\self_module\__init__.py" />
+    <Compile Include="Larbot\ui\ui_mainwindow.py" />
+    <Compile Include="Larbot\ui\__init__.py" />
+    <Compile Include="Larbot\__init__.py" />
+    <Compile Include="run %28deprecated%29.py" />
+    <Compile Include="run_ui.pyw" />
+    <Compile Include="setup.py" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Larbot" />
+    <Folder Include="Larbot\self_module" />
+    <Folder Include="Larbot\self_module\commands" />
+    <Folder Include="Larbot\ui" />
+  </ItemGroup>
+  <Import Project="$(PtvsTargetsFile)" Condition="Exists($(PtvsTargetsFile))" />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" Condition="!Exists($(PtvsTargetsFile))" />
+</Project>
