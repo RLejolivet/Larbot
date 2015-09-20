@@ -22,8 +22,6 @@
     <PtvsTargetsFile>$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets</PtvsTargetsFile>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="base.py" />
-    <Compile Include="functional_hello_world.py" />
     <Compile Include="Larbot\larbot.py" />
     <Compile Include="Larbot\self_module\commands\smash_commands.py" />
     <Compile Include="Larbot\self_module\commands\user_priviledge.py" />
