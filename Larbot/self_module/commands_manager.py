@@ -49,6 +49,7 @@ def print_commands(socket, channel, name, args, qwindow=None, tags={}):
 commands = dict()
 commands["commands"] = print_commands
 commands["enter"] = Larbot.self_module.commands.smash_commands.enter
+commands["join"] = Larbot.self_module.commands.smash_commands.enter
 commands["open"] = Larbot.self_module.commands.smash_commands.open_list
 commands["close"] = Larbot.self_module.commands.smash_commands.close_list
 commands["setcap"] = Larbot.self_module.commands.smash_commands.set_cap
@@ -57,6 +58,7 @@ commands["reset"] = Larbot.self_module.commands.smash_commands.reset_list
 commands["line"] = Larbot.self_module.commands.smash_commands.list_entered
 commands["list"] = Larbot.self_module.commands.smash_commands.list_entered
 commands["eta"] = Larbot.self_module.commands.smash_commands.eta
+commands["spot"] = Larbot.self_module.commands.smash_commands.eta
 commands["drop"] = Larbot.self_module.commands.smash_commands.drop
 commands["leave"] = Larbot.self_module.commands.smash_commands.drop
 commands["swap"] = Larbot.self_module.commands.smash_commands.swap
