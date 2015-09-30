@@ -78,6 +78,7 @@ mod_commands["limit"] = Larbot.self_module.commands.smash_commands.set_limit_ree
 
 hidden_commands = dict()
 hidden_commands["join"] = Larbot.self_module.commands.smash_commands.enter
+hidden_commands["joinlist"] = Larbot.self_module.commands.smash_commands.enter
 hidden_commands["reset"] = Larbot.self_module.commands.smash_commands.reset_list
 hidden_commands["leave"] = Larbot.self_module.commands.smash_commands.drop
 hidden_commands["line"] = Larbot.self_module.commands.smash_commands.list_entered
