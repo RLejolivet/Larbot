@@ -26,8 +26,17 @@ def run(command, socket, channel, name, args, qwindow, tags={}):
         'args': args,
         'tags': tags
     }
+
+    target = None
     if(command in commands.keys()):
-        t = threading.Thread(target=commands[command], kwargs=kwargs)
+        target = commands[command]
+    elif(command in mod_commands.keys()):
+        target = mod_commands[command]
+    elif(command in hidden_commands.keys()):
+        target = hidden_commands[command]
+
+    if(target is not None):
+        t = threading.Thread(target=target, kwargs=kwargs)
         t.setDaemon(True)
         t.start()
     else:
@@ -51,23 +60,28 @@ def print_commands(socket, channel, name, args, qwindow=None, tags={}):
 commands = dict()
 commands["commands"] = print_commands
 commands["enter"] = Larbot.self_module.commands.smash_commands.enter
-commands["join"] = Larbot.self_module.commands.smash_commands.enter
-commands["open"] = Larbot.self_module.commands.smash_commands.open_list
-commands["close"] = Larbot.self_module.commands.smash_commands.close_list
-commands["setcap"] = Larbot.self_module.commands.smash_commands.set_cap
-commands["next"] = Larbot.self_module.commands.smash_commands.next_player
-commands["reset"] = Larbot.self_module.commands.smash_commands.reset_list
-commands["line"] = Larbot.self_module.commands.smash_commands.list_entered
 commands["list"] = Larbot.self_module.commands.smash_commands.list_entered
 commands["eta"] = Larbot.self_module.commands.smash_commands.eta
-commands["spot"] = Larbot.self_module.commands.smash_commands.eta
 commands["drop"] = Larbot.self_module.commands.smash_commands.drop
-commands["leave"] = Larbot.self_module.commands.smash_commands.drop
-commands["swap"] = Larbot.self_module.commands.smash_commands.swap
-commands["remove"] = Larbot.self_module.commands.smash_commands.remove
-commands["move"] = Larbot.self_module.commands.smash_commands.move
-commands["add"] = Larbot.self_module.commands.smash_commands.add
-commands["subsonly"] = Larbot.self_module.commands.smash_commands.set_subs_only
+
+mod_commands = dict()
+mod_commands["open"] = Larbot.self_module.commands.smash_commands.open_list
+mod_commands["close"] = Larbot.self_module.commands.smash_commands.close_list
+mod_commands["setcap"] = Larbot.self_module.commands.smash_commands.set_cap
+mod_commands["next"] = Larbot.self_module.commands.smash_commands.next_player
+mod_commands["swap"] = Larbot.self_module.commands.smash_commands.swap
+mod_commands["remove"] = Larbot.self_module.commands.smash_commands.remove
+mod_commands["move"] = Larbot.self_module.commands.smash_commands.move
+mod_commands["add"] = Larbot.self_module.commands.smash_commands.add
+mod_commands["subsonly"] = Larbot.self_module.commands.smash_commands.set_subs_only
+
+hidden_commands = dict()
+hidden_commands["join"] = Larbot.self_module.commands.smash_commands.enter
+hidden_commands["reset"] = Larbot.self_module.commands.smash_commands.reset_list
+hidden_commands["leave"] = Larbot.self_module.commands.smash_commands.drop
+hidden_commands["line"] = Larbot.self_module.commands.smash_commands.list_entered
+hidden_commands["spot"] = Larbot.self_module.commands.smash_commands.eta
+
 
 if __name__ == "__main__":
     commands["hello"](None, "a")
