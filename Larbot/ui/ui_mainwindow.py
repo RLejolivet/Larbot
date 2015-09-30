@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'mainwindow.ui'
 #
-# Created: Wed Sep 30 18:38:49 2015
+# Created: Wed Sep 30 20:01:23 2015
 #      by: pyside-uic 0.2.15 running on PySide 1.2.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -291,12 +291,12 @@ class Ui_MainWindow(object):
         self.horizontalLayout_11 = QtGui.QHBoxLayout(self.widget_15)
         self.horizontalLayout_11.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout_11.setObjectName("horizontalLayout_11")
-        self.limit_entry_checkbox = QtGui.QCheckBox(self.widget_15)
-        self.limit_entry_checkbox.setObjectName("limit_entry_checkbox")
-        self.horizontalLayout_11.addWidget(self.limit_entry_checkbox)
-        self.limit_entry_help_button = QtGui.QToolButton(self.widget_15)
-        self.limit_entry_help_button.setObjectName("limit_entry_help_button")
-        self.horizontalLayout_11.addWidget(self.limit_entry_help_button)
+        self.limit_reentry_checkbox = QtGui.QCheckBox(self.widget_15)
+        self.limit_reentry_checkbox.setObjectName("limit_reentry_checkbox")
+        self.horizontalLayout_11.addWidget(self.limit_reentry_checkbox)
+        self.limit_reentry_help_button = QtGui.QToolButton(self.widget_15)
+        self.limit_reentry_help_button.setObjectName("limit_reentry_help_button")
+        self.horizontalLayout_11.addWidget(self.limit_reentry_help_button)
         spacerItem13 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
         self.horizontalLayout_11.addItem(spacerItem13)
         self.verticalLayout_6.addWidget(self.widget_15)
@@ -370,8 +370,8 @@ class Ui_MainWindow(object):
         self.swap_button.setText(QtGui.QApplication.translate("MainWindow", "Swap players", None, QtGui.QApplication.UnicodeUTF8))
         self.open_line_checkbox.setText(QtGui.QApplication.translate("MainWindow", "Open line", None, QtGui.QApplication.UnicodeUTF8))
         self.label_4.setText(QtGui.QApplication.translate("MainWindow", "Line entrants cap (0 for no cap):", None, QtGui.QApplication.UnicodeUTF8))
-        self.limit_entry_checkbox.setText(QtGui.QApplication.translate("MainWindow", "Limit players to one entry per stream", None, QtGui.QApplication.UnicodeUTF8))
-        self.limit_entry_help_button.setText(QtGui.QApplication.translate("MainWindow", "?", None, QtGui.QApplication.UnicodeUTF8))
+        self.limit_reentry_checkbox.setText(QtGui.QApplication.translate("MainWindow", "Limit players to one entry per stream", None, QtGui.QApplication.UnicodeUTF8))
+        self.limit_reentry_help_button.setText(QtGui.QApplication.translate("MainWindow", "?", None, QtGui.QApplication.UnicodeUTF8))
         self.subscriber_checkbox.setText(QtGui.QApplication.translate("MainWindow", "Subscriber only", None, QtGui.QApplication.UnicodeUTF8))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.bot_info), QtGui.QApplication.translate("MainWindow", "Bot Info", None, QtGui.QApplication.UnicodeUTF8))
         self.menuFile.setTitle(QtGui.QApplication.translate("MainWindow", "File", None, QtGui.QApplication.UnicodeUTF8))

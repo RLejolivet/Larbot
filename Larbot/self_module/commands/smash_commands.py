@@ -32,8 +32,8 @@ line_opened_lock = threading.Lock()
 subs_only = False
 subs_only_lock = threading.Lock()
 
-limit_entry = False
-limit_entry_lock = threading.Lock()
+limit_reentry = False
+limit_reentry_lock = threading.Lock()
 
 played_list = []
 played_list_lock = threading.Lock()
@@ -65,7 +65,7 @@ try:
             pass
 
         try:
-            limit_entry = json_load['limit_entry']
+            limit_reentry = json_load['limit_reentry']
 
         except KeyError:
             pass
@@ -82,7 +82,7 @@ def enter(socket, channel, name, args, tags={}):
     global line_opened
     global subs_only
     global qwindow
-    global limit_entry
+    global limit_reentry
     global played_list
 
     player_NNID_lock.acquire()
@@ -159,7 +159,7 @@ def add(socket, channel, name, args, tags={}):
     global line_opened
     global subs_only
     global qwindow
-    global limit_entry
+    global limit_reentry
     global played_list
 
     if(not (name == channel or
@@ -223,7 +223,7 @@ def open_list(socket, channel, name, args, tags={}):
     global line_opened
     global subs_only
     global qwindow
-    global limit_entry
+    global limit_reentry
     global played_list
 
     if(not (name == channel or
@@ -249,7 +249,7 @@ def close_list(socket, channel, name, args, tags={}):
     global line_opened
     global subs_only
     global qwindow
-    global limit_entry
+    global limit_reentry
     global played_list
 
     if(not (name == channel or
@@ -275,7 +275,7 @@ def set_cap(socket, channel, name, args, tags={}):
     global line_opened
     global subs_only
     global qwindow
-    global limit_entry
+    global limit_reentry
     global played_list
 
     if(not (name == channel or
@@ -325,7 +325,7 @@ def next_player(socket, channel, name, args, tags={}):
     global line_opened
     global subs_only
     global qwindow
-    global limit_entry
+    global limit_reentry
     global played_list
 
     if(not (name == channel or
@@ -384,7 +384,7 @@ def reset_list(socket, channel, name, args, tags={}):
     global line_opened
     global subs_only
     global qwindow
-    global limit_entry
+    global limit_reentry
     global played_list
 
     if(name != channel):
@@ -412,7 +412,7 @@ def list_entered(socket, channel, name, args, tags={}):
     global line_opened
     global subs_only
     global qwindow
-    global limit_entry
+    global limit_reentry
     global played_list
 
     current_list = []
@@ -435,7 +435,7 @@ def eta(socket, channel, name, args, tags={}):
     global line_opened
     global subs_only
     global qwindow
-    global limit_entry
+    global limit_reentry
     global played_list
 
     current_player_lock.acquire()
@@ -470,7 +470,7 @@ def drop(socket, channel, name, args, tags={}):
     global line_opened
     global subs_only
     global qwindow
-    global limit_entry
+    global limit_reentry
     global played_list
 
     player_list_lock.acquire()
@@ -502,7 +502,7 @@ def swap(socket, channel, name, args, tags={}):
     global line_opened
     global subs_only
     global qwindow
-    global limit_entry
+    global limit_reentry
     global played_list
 
     if(not (name == channel or
@@ -549,7 +549,7 @@ def remove(socket, channel, name, args, tags={}):
     global line_opened
     global subs_only
     global qwindow
-    global limit_entry
+    global limit_reentry
     global played_list
 
     if(not (name == channel or
@@ -573,7 +573,7 @@ def move(socket, channel, name, args, tags={}):
     global line_opened
     global subs_only
     global qwindow
-    global limit_entry
+    global limit_reentry
     global played_list
 
     if(not (name == channel or
@@ -633,7 +633,7 @@ def set_subs_only(socket, channel, name, args, tags={}):
     global line_opened
     global subs_only
     global qwindow
-    global limit_entry
+    global limit_reentry
     global played_list
 
     if(not (name == channel or
@@ -671,6 +671,52 @@ def set_subs_only(socket, channel, name, args, tags={}):
             channel, "@{:s}: Line is no longer subs-only!".format(name))
     send_msg(socket, ret)
 
+def set_limit_reentry(socket, channel, name, args, tags={}):
+    global current_player
+    global player_list
+    global player_list_cap
+    global player_NNID
+    global line_opened
+    global subs_only
+    global qwindow
+    global limit_reentry
+    global played_list
+
+    if(not (name == channel or
+            tags.get('user-type', user_type.empty) == user_type.mod)):
+        return
+
+    if(len(args) < 1):
+        ret = create_msg(channel,
+                         "@{:s}: Usage: !subsonly <ON/OFF>".format(name))
+        send_msg(socket, ret)
+        return
+
+    if(args[0].lower() in ["on", "yes", "y", "true", "1"]):
+        new_limit = True
+    elif(args[0].lower() in ["off", "no", "n", "false", "0"]):
+        new_limit = False
+    else:
+        ret = create_msg(channel,
+                         "@{:s}: Usage: !limit <ON/OFF>".format(name))
+        send_msg(socket, ret)
+        return
+
+    limit_reentry_lock.acquire()
+    limit_reentry = new_limit
+    limit_reentry_lock.release()
+
+    if(qwindow is not None):
+        qwindow.update_limit_reentry(new_limit)
+
+    if(new_limit):
+        ret = create_msg(
+            channel, "@{:s}: Line is now limited to once per stream!".format(name))
+    else:
+        ret = create_msg(
+            channel, "@{:s}: Line is no longer limited to once per stream!".format(name))
+    send_msg(socket, ret)
+
 
 def load(qmain_window):
     global current_player
@@ -680,7 +726,7 @@ def load(qmain_window):
     global line_opened
     global subs_only
     global qwindow
-    global limit_entry
+    global limit_reentry
     global played_list
 
     qwindow = qmain_window
@@ -715,9 +761,9 @@ def load(qmain_window):
         qwindow.update_line_cap(player_list_cap)
         player_list_cap_lock.release()
 
-        limit_entry_lock.acquire()
-        qwindow.update_limit_entry(limit_entry)
-        limit_entry_lock.release()
+        limit_reentry_lock.acquire()
+        qwindow.update_limit_reentry(limit_reentry)
+        limit_reentry_lock.release()
 
 
 def save_to_file():
@@ -728,21 +774,21 @@ def save_to_file():
     global line_opened
     global subs_only
     global qwindow
-    global limit_entry
+    global limit_reentry
     global played_list
 
     current_player_lock.acquire()
     player_list_cap_lock.acquire()
     player_list_lock.acquire()
     player_NNID_lock.acquire()
-    limit_entry_lock.acquire()
+    limit_reentry_lock.acquire()
 
     save_dict = {
         'current_player': current_player,
         'player_list': player_list,
         'player_list_cap': player_list_cap,
         'player_NNID': player_NNID,
-        'limit_entry': limit_entry,
+        'limit_reentry': limit_reentry,
     }
 
     try:
@@ -753,4 +799,4 @@ def save_to_file():
         player_list_cap_lock.release()
         player_list_lock.release()
         player_NNID_lock.release()
-        limit_entry_lock.release()
+        limit_reentry_lock.release()

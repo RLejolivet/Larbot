@@ -74,6 +74,7 @@ mod_commands["remove"] = Larbot.self_module.commands.smash_commands.remove
 mod_commands["move"] = Larbot.self_module.commands.smash_commands.move
 mod_commands["add"] = Larbot.self_module.commands.smash_commands.add
 mod_commands["subsonly"] = Larbot.self_module.commands.smash_commands.set_subs_only
+mod_commands["limit"] = Larbot.self_module.commands.smash_commands.set_limit_reentry
 
 hidden_commands = dict()
 hidden_commands["join"] = Larbot.self_module.commands.smash_commands.enter

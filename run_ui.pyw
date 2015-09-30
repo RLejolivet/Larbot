@@ -46,8 +46,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.actionNoLogin.triggered.connect(self.login_failure_slot)
         self.remove_button.clicked.connect(self.remove_player)
         self.swap_button.clicked.connect(self.swap_players)
-        self.limit_entry_checkbox.toggled.connect(self.limit_entry)
-        self.limit_entry_help_button.clicked.connect(self.limit_entry_help)
+        self.limit_reentry_checkbox.toggled.connect(self.limit_reentry)
+        self.limit_reentry_help_button.clicked.connect(self.limit_reentry_help)
 
     def about(self):
         '''Popup a box with about message.'''
@@ -154,7 +154,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         run('swap', Larbot.larbot.s, channel, channel,
             [players[0].data(), players[1].data()], self)
 
-    def limit_entry(self, switch):
+    def limit_reentry(self, switch):
         channel = self.channel_line_edit.text().lower()
         type(self.open_line_checkbox.checkState())
         if(switch):
@@ -162,7 +162,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         else:
             run('limit', Larbot.larbot.s, channel, channel, ["off"], self)
 
-    def limit_entry_help(self):
+    def limit_reentry_help(self):
         QMessageBox.about(
             self,
             "Line entry limit help",
@@ -200,8 +200,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             new_cap = 0
         self.entrants_cap_spinbox.setValue(new_cap)
 
-    def update_limit_entry(self, limit_entry):
-        self.limit_entry_checkbox.setChecked(limit_entry)
+    def update_limit_reentry(self, limit_reentry):
+        self.limit_reentry_checkbox.setChecked(limit_reentry)
 
 
 if __name__ == '__main__':

@@ -611,14 +611,14 @@
                   <widget class="QWidget" name="widget_15" native="true">
                    <layout class="QHBoxLayout" name="horizontalLayout_11">
                     <item>
-                     <widget class="QCheckBox" name="limit_entry_checkbox">
+                     <widget class="QCheckBox" name="limit_reentry_checkbox">
                       <property name="text">
                        <string>Limit players to one entry per stream</string>
                       </property>
                      </widget>
                     </item>
                     <item>
-                     <widget class="QToolButton" name="limit_entry_help_button">
+                     <widget class="QToolButton" name="limit_reentry_help_button">
                       <property name="text">
                        <string>?</string>
                       </property>
