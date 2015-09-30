@@ -91,7 +91,7 @@ def enter(socket, channel, name, args, tags={}):
         ret = create_msg(
             channel,
             "@{:s}: Usage: '!enter <NNID> <Mii name>'. "
-            "You have not been entered".format(name))
+            "You have not been entered.".format(name))
         send_msg(socket, ret)
         return
     elif(name not in player_NNID.keys()):
@@ -132,6 +132,20 @@ def enter(socket, channel, name, args, tags={}):
         send_msg(socket, ret)
         return
     subs_only_lock.release()
+
+    limit_reentry_lock.acquire()
+    if(limit_reentry):
+        played_list_lock.acquire()
+        if(name in played_list):
+            played_list_lock.release()
+            limit_reentry_lock.release()
+            ret = create_msg(channel, 
+                             "@{:s}: You have already played this stream, "
+                             "and the line can currently not be reentered.".format(name))
+            send_msg(socket, ret)
+            return
+        played_list_lock.release()
+    limit_reentry_lock.release()
 
     player_list_lock.acquire()
     if(name not in player_list):
@@ -361,6 +375,10 @@ def next_player(socket, channel, name, args, tags={}):
     current_player_lock.acquire()
     current_player = player_name
     current_player_lock.release()
+
+    played_list_lock.acquire()
+    played_list.append(player_name)
+    played_list_lock.release()
 
     ret = create_msg(
         channel,
