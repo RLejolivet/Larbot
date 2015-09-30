@@ -717,6 +717,8 @@ def set_limit_reentry(socket, channel, name, args, tags={}):
             channel, "@{:s}: Line is no longer limited to once per stream!".format(name))
     send_msg(socket, ret)
 
+    save_to_file()
+
 
 def load(qmain_window):
     global current_player
