@@ -46,6 +46,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.actionNoLogin.triggered.connect(self.login_failure_slot)
         self.remove_button.clicked.connect(self.remove_player)
         self.swap_button.clicked.connect(self.swap_players)
+        self.limit_entry_checkbox.toggled.connect(self.limit_entry)
+        self.limit_entry_help_button.clicked.connect(self.limit_entry_help)
 
     def about(self):
         '''Popup a box with about message.'''
@@ -151,6 +153,22 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         run('swap', Larbot.larbot.s, channel, channel,
             [players[0].data(), players[1].data()], self)
+
+    def limit_entry(self, switch):
+        channel = self.channel_line_edit.text().lower()
+        type(self.open_line_checkbox.checkState())
+        if(switch):
+            run('limit', Larbot.larbot.s, channel, channel, ["on"], self)
+        else:
+            run('limit', Larbot.larbot.s, channel, channel, ["off"], self)
+
+    def limit_entry_help(self):
+        QMessageBox.about(
+            self,
+            "Line entry limit help",
+            "Checking this box makes players unable to join the line again\n"
+            "after having played once. This is reset when the bot is restarted.\n\n"
+            "Note: they can still be added manually by yourself or mods.")
 
     def login_failure_slot(self):
         QMessageBox.about(

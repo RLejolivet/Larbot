@@ -30,6 +30,8 @@ def run(command, socket, channel, name, args, qwindow, tags={}):
         t = threading.Thread(target=commands[command], kwargs=kwargs)
         t.setDaemon(True)
         t.start()
+    else:
+        print("Unknown command: {!s}".format(command))
 
 
 def hello(socket, channel, name, args):
