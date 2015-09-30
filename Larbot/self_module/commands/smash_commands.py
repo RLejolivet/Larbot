@@ -32,6 +32,12 @@ line_opened_lock = threading.Lock()
 subs_only = False
 subs_only_lock = threading.Lock()
 
+limit_entry = False
+limit_entry_lock = threading.Lock()
+
+played_list = []
+played_list_lock = threading.Lock()
+
 qwindow = None
 
 try:
@@ -57,24 +63,27 @@ try:
             player_NNID = json_load['player_NNID']
         except KeyError:
             pass
+
+        try:
+            limit_entry = json_load['limit_entry']
+
+        except KeyError:
+            pass
+
 except (FileNotFoundError, ValueError):
     pass
 
 
 def enter(socket, channel, name, args, tags={}):
     global current_player
-    global current_player_lock
     global player_list
-    global player_list_lock
     global player_list_cap
-    global player_list_cap_lock
     global player_NNID
-    global player_NNID_lock
     global line_opened
-    global line_opened_lock
     global subs_only
-    global subs_only_lock
     global qwindow
+    global limit_entry
+    global played_list
 
     player_NNID_lock.acquire()
     if(len(args) < 2 and name not in player_NNID.keys()):
@@ -144,18 +153,14 @@ def enter(socket, channel, name, args, tags={}):
 
 def add(socket, channel, name, args, tags={}):
     global current_player
-    global current_player_lock
     global player_list
-    global player_list_lock
     global player_list_cap
-    global player_list_cap_lock
     global player_NNID
-    global player_NNID_lock
     global line_opened
-    global line_opened_lock
     global subs_only
-    global subs_only_lock
     global qwindow
+    global limit_entry
+    global played_list
 
     if(not (name == channel or
             tags.get('user-type', user_type.empty) == user_type.mod)):
@@ -212,18 +217,14 @@ def add(socket, channel, name, args, tags={}):
 
 def open_list(socket, channel, name, args, tags={}):
     global current_player
-    global current_player_lock
     global player_list
-    global player_list_lock
     global player_list_cap
-    global player_list_cap_lock
     global player_NNID
-    global player_NNID_lock
     global line_opened
-    global line_opened_lock
     global subs_only
-    global subs_only_lock
     global qwindow
+    global limit_entry
+    global played_list
 
     if(not (name == channel or
             tags.get('user-type', user_type.empty) == user_type.mod)):
@@ -242,18 +243,14 @@ def open_list(socket, channel, name, args, tags={}):
 
 def close_list(socket, channel, name, args, tags={}):
     global current_player
-    global current_player_lock
     global player_list
-    global player_list_lock
     global player_list_cap
-    global player_list_cap_lock
     global player_NNID
-    global player_NNID_lock
     global line_opened
-    global line_opened_lock
     global subs_only
-    global subs_only_lock
     global qwindow
+    global limit_entry
+    global played_list
 
     if(not (name == channel or
             tags.get('user-type', user_type.empty) == user_type.mod)):
@@ -272,18 +269,14 @@ def close_list(socket, channel, name, args, tags={}):
 
 def set_cap(socket, channel, name, args, tags={}):
     global current_player
-    global current_player_lock
     global player_list
-    global player_list_lock
     global player_list_cap
-    global player_list_cap_lock
     global player_NNID
-    global player_NNID_lock
     global line_opened
-    global line_opened_lock
     global subs_only
-    global subs_only_lock
     global qwindow
+    global limit_entry
+    global played_list
 
     if(not (name == channel or
             tags.get('user-type', user_type.empty) == user_type.mod)):
@@ -326,18 +319,14 @@ def set_cap(socket, channel, name, args, tags={}):
 
 def next_player(socket, channel, name, args, tags={}):
     global current_player
-    global current_player_lock
     global player_list
-    global player_list_lock
     global player_list_cap
-    global player_list_cap_lock
     global player_NNID
-    global player_NNID_lock
     global line_opened
-    global line_opened_lock
     global subs_only
-    global subs_only_lock
     global qwindow
+    global limit_entry
+    global played_list
 
     if(not (name == channel or
             tags.get('user-type', user_type.empty) == user_type.mod)):
@@ -389,18 +378,14 @@ def next_player(socket, channel, name, args, tags={}):
 
 def reset_list(socket, channel, name, args, tags={}):
     global current_player
-    global current_player_lock
     global player_list
-    global player_list_lock
     global player_list_cap
-    global player_list_cap_lock
     global player_NNID
-    global player_NNID_lock
     global line_opened
-    global line_opened_lock
     global subs_only
-    global subs_only_lock
     global qwindow
+    global limit_entry
+    global played_list
 
     if(name != channel):
         return
@@ -421,18 +406,14 @@ def reset_list(socket, channel, name, args, tags={}):
 
 def list_entered(socket, channel, name, args, tags={}):
     global current_player
-    global current_player_lock
     global player_list
-    global player_list_lock
     global player_list_cap
-    global player_list_cap_lock
     global player_NNID
-    global player_NNID_lock
     global line_opened
-    global line_opened_lock
     global subs_only
-    global subs_only_lock
     global qwindow
+    global limit_entry
+    global played_list
 
     current_list = []
     player_list_lock.acquire()
@@ -448,18 +429,14 @@ def list_entered(socket, channel, name, args, tags={}):
 
 def eta(socket, channel, name, args, tags={}):
     global current_player
-    global current_player_lock
     global player_list
-    global player_list_lock
     global player_list_cap
-    global player_list_cap_lock
     global player_NNID
-    global player_NNID_lock
     global line_opened
-    global line_opened_lock
     global subs_only
-    global subs_only_lock
     global qwindow
+    global limit_entry
+    global played_list
 
     current_player_lock.acquire()
     if(name == current_player):
@@ -487,18 +464,14 @@ def eta(socket, channel, name, args, tags={}):
 
 def drop(socket, channel, name, args, tags={}):
     global current_player
-    global current_player_lock
     global player_list
-    global player_list_lock
     global player_list_cap
-    global player_list_cap_lock
     global player_NNID
-    global player_NNID_lock
     global line_opened
-    global line_opened_lock
     global subs_only
-    global subs_only_lock
     global qwindow
+    global limit_entry
+    global played_list
 
     player_list_lock.acquire()
     if (name in player_list):
@@ -523,18 +496,14 @@ def drop(socket, channel, name, args, tags={}):
 
 def swap(socket, channel, name, args, tags={}):
     global current_player
-    global current_player_lock
     global player_list
-    global player_list_lock
     global player_list_cap
-    global player_list_cap_lock
     global player_NNID
-    global player_NNID_lock
     global line_opened
-    global line_opened_lock
     global subs_only
-    global subs_only_lock
     global qwindow
+    global limit_entry
+    global played_list
 
     if(not (name == channel or
             tags.get('user-type', user_type.empty) == user_type.mod)):
@@ -574,18 +543,14 @@ def swap(socket, channel, name, args, tags={}):
 
 def remove(socket, channel, name, args, tags={}):
     global current_player
-    global current_player_lock
     global player_list
-    global player_list_lock
     global player_list_cap
-    global player_list_cap_lock
     global player_NNID
-    global player_NNID_lock
     global line_opened
-    global line_opened_lock
     global subs_only
-    global subs_only_lock
     global qwindow
+    global limit_entry
+    global played_list
 
     if(not (name == channel or
             tags.get('user-type', user_type.empty) == user_type.mod)):
@@ -602,18 +567,14 @@ def remove(socket, channel, name, args, tags={}):
 
 def move(socket, channel, name, args, tags={}):
     global current_player
-    global current_player_lock
     global player_list
-    global player_list_lock
     global player_list_cap
-    global player_list_cap_lock
     global player_NNID
-    global player_NNID_lock
     global line_opened
-    global line_opened_lock
     global subs_only
-    global subs_only_lock
     global qwindow
+    global limit_entry
+    global played_list
 
     if(not (name == channel or
             tags.get('user-type', user_type.empty) == user_type.mod)):
@@ -666,18 +627,14 @@ def move(socket, channel, name, args, tags={}):
 
 def set_subs_only(socket, channel, name, args, tags={}):
     global current_player
-    global current_player_lock
     global player_list
-    global player_list_lock
     global player_list_cap
-    global player_list_cap_lock
     global player_NNID
-    global player_NNID_lock
     global line_opened
-    global line_opened_lock
     global subs_only
-    global subs_only_lock
     global qwindow
+    global limit_entry
+    global played_list
 
     if(not (name == channel or
             tags.get('user-type', user_type.empty) == user_type.mod)):
@@ -717,18 +674,14 @@ def set_subs_only(socket, channel, name, args, tags={}):
 
 def load(qmain_window):
     global current_player
-    global current_player_lock
     global player_list
-    global player_list_lock
     global player_list_cap
-    global player_list_cap_lock
     global player_NNID
-    global player_NNID_lock
     global line_opened
-    global line_opened_lock
     global subs_only
-    global subs_only_lock
     global qwindow
+    global limit_entry
+    global played_list
 
     qwindow = qmain_window
 
@@ -762,32 +715,34 @@ def load(qmain_window):
         qwindow.update_line_cap(player_list_cap)
         player_list_cap_lock.release()
 
+        limit_entry_lock.acquire()
+        qwindow.update_limit_entry(limit_entry)
+        limit_entry_lock.release()
+
 
 def save_to_file():
     global current_player
-    global current_player_lock
     global player_list
-    global player_list_lock
     global player_list_cap
-    global player_list_cap_lock
     global player_NNID
-    global player_NNID_lock
     global line_opened
-    global line_opened_lock
     global subs_only
-    global subs_only_lock
     global qwindow
+    global limit_entry
+    global played_list
 
     current_player_lock.acquire()
     player_list_cap_lock.acquire()
     player_list_lock.acquire()
     player_NNID_lock.acquire()
+    limit_entry_lock.acquire()
 
     save_dict = {
         'current_player': current_player,
         'player_list': player_list,
         'player_list_cap': player_list_cap,
-        'player_NNID': player_NNID
+        'player_NNID': player_NNID,
+        'limit_entry': limit_entry,
     }
 
     try:
@@ -798,3 +753,4 @@ def save_to_file():
         player_list_cap_lock.release()
         player_list_lock.release()
         player_NNID_lock.release()
+        limit_entry_lock.release()

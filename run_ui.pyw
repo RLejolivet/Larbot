@@ -200,6 +200,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             new_cap = 0
         self.entrants_cap_spinbox.setValue(new_cap)
 
+    def update_limit_entry(self, limit_entry):
+        self.limit_entry_checkbox.setChecked(limit_entry)
+
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
