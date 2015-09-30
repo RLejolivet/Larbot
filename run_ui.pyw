@@ -8,9 +8,10 @@ Created on 2015-03-17
 
 import os
 import sys
-import platform
 import json
+import copy
 import struct
+import platform
 
 import PySide
 from PySide import QtCore
@@ -139,8 +140,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         if(len(players) == 0):
             return
 
-        for player in players:
-            run('drop', Larbot.larbot.s, channel, player.data(), [], self)
+        for player_name in [player.data() for player in players]:
+            run('drop', Larbot.larbot.s, channel, player_name, [], self)
 
     def swap_players(self):
         channel = self.channel_line_edit.text().lower()
