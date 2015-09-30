@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'mainwindow.ui'
 #
-# Created: Mon Jul  6 23:42:24 2015
+# Created: Wed Sep 30 18:38:49 2015
 #      by: pyside-uic 0.2.15 running on PySide 1.2.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -12,7 +12,7 @@ from PySide import QtCore, QtGui
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(766, 538)
+        MainWindow.resize(748, 596)
         MainWindow.setStyleSheet("f")
         self.centralwidget = QtGui.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
@@ -286,6 +286,20 @@ class Ui_MainWindow(object):
         self.entrants_cap_spinbox.setObjectName("entrants_cap_spinbox")
         self.horizontalLayout_3.addWidget(self.entrants_cap_spinbox)
         self.verticalLayout_6.addWidget(self.widget_9)
+        self.widget_15 = QtGui.QWidget(self.widget_10)
+        self.widget_15.setObjectName("widget_15")
+        self.horizontalLayout_11 = QtGui.QHBoxLayout(self.widget_15)
+        self.horizontalLayout_11.setContentsMargins(0, 0, 0, 0)
+        self.horizontalLayout_11.setObjectName("horizontalLayout_11")
+        self.limit_entry_checkbox = QtGui.QCheckBox(self.widget_15)
+        self.limit_entry_checkbox.setObjectName("limit_entry_checkbox")
+        self.horizontalLayout_11.addWidget(self.limit_entry_checkbox)
+        self.limit_entry_help_button = QtGui.QToolButton(self.widget_15)
+        self.limit_entry_help_button.setObjectName("limit_entry_help_button")
+        self.horizontalLayout_11.addWidget(self.limit_entry_help_button)
+        spacerItem13 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        self.horizontalLayout_11.addItem(spacerItem13)
+        self.verticalLayout_6.addWidget(self.widget_15)
         self.widget_11 = QtGui.QWidget(self.widget_10)
         self.widget_11.setObjectName("widget_11")
         self.horizontalLayout_10 = QtGui.QHBoxLayout(self.widget_11)
@@ -294,21 +308,21 @@ class Ui_MainWindow(object):
         self.subscriber_checkbox = QtGui.QCheckBox(self.widget_11)
         self.subscriber_checkbox.setObjectName("subscriber_checkbox")
         self.horizontalLayout_10.addWidget(self.subscriber_checkbox)
-        spacerItem13 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
-        self.horizontalLayout_10.addItem(spacerItem13)
+        spacerItem14 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        self.horizontalLayout_10.addItem(spacerItem14)
         self.verticalLayout_6.addWidget(self.widget_11)
-        spacerItem14 = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
-        self.verticalLayout_6.addItem(spacerItem14)
+        spacerItem15 = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
+        self.verticalLayout_6.addItem(spacerItem15)
         self.horizontalLayout_2.addWidget(self.widget_10)
         self.verticalLayout_7.addWidget(self.widget_6)
         self.horizontalLayout_9.addWidget(self.widget_12)
-        spacerItem15 = QtGui.QSpacerItem(600, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
-        self.horizontalLayout_9.addItem(spacerItem15)
+        spacerItem16 = QtGui.QSpacerItem(600, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        self.horizontalLayout_9.addItem(spacerItem16)
         self.tabWidget.addTab(self.bot_info, "")
         self.horizontalLayout_8.addWidget(self.tabWidget)
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtGui.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 766, 21))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 748, 21))
         self.menubar.setObjectName("menubar")
         self.menuFile = QtGui.QMenu(self.menubar)
         self.menuFile.setObjectName("menuFile")
@@ -356,6 +370,8 @@ class Ui_MainWindow(object):
         self.swap_button.setText(QtGui.QApplication.translate("MainWindow", "Swap players", None, QtGui.QApplication.UnicodeUTF8))
         self.open_line_checkbox.setText(QtGui.QApplication.translate("MainWindow", "Open line", None, QtGui.QApplication.UnicodeUTF8))
         self.label_4.setText(QtGui.QApplication.translate("MainWindow", "Line entrants cap (0 for no cap):", None, QtGui.QApplication.UnicodeUTF8))
+        self.limit_entry_checkbox.setText(QtGui.QApplication.translate("MainWindow", "Limit players to one entry per stream", None, QtGui.QApplication.UnicodeUTF8))
+        self.limit_entry_help_button.setText(QtGui.QApplication.translate("MainWindow", "?", None, QtGui.QApplication.UnicodeUTF8))
         self.subscriber_checkbox.setText(QtGui.QApplication.translate("MainWindow", "Subscriber only", None, QtGui.QApplication.UnicodeUTF8))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.bot_info), QtGui.QApplication.translate("MainWindow", "Bot Info", None, QtGui.QApplication.UnicodeUTF8))
         self.menuFile.setTitle(QtGui.QApplication.translate("MainWindow", "File", None, QtGui.QApplication.UnicodeUTF8))
