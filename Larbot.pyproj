@@ -27,7 +27,6 @@
     <Compile Include="Larbot\self_module\commands\user_priviledge.py" />
     <Compile Include="Larbot\self_module\commands\__init__.py" />
     <Compile Include="Larbot\self_module\commands_manager.py" />
-    <Compile Include="Larbot\self_module\connection_manager.py" />
     <Compile Include="Larbot\self_module\message_queue.py" />
     <Compile Include="Larbot\self_module\twitch_tags.py" />
     <Compile Include="Larbot\self_module\__init__.py" />
@@ -43,6 +42,9 @@
     <Folder Include="Larbot\self_module" />
     <Folder Include="Larbot\self_module\commands" />
     <Folder Include="Larbot\ui" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="readme.rst" />
   </ItemGroup>
   <Import Project="$(PtvsTargetsFile)" Condition="Exists($(PtvsTargetsFile))" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" Condition="!Exists($(PtvsTargetsFile))" />
