@@ -121,8 +121,7 @@ def enter(socket, channel, name, args, tags={}):
 
     subs_only_lock.acquire()
     if(subs_only and not
-       (tags.get('subscriber', False) or
-            tags.get('user-type', user_type.empty) != user_type.empty)):
+       tags.get('subscriber', False)):
         subs_only_lock.release()
         ret = create_msg(
             channel,
