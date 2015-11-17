@@ -57,8 +57,16 @@ def print_commands(socket, channel, name, args, qwindow=None, tags={}):
                      ", ".join(sorted(list(commands.keys()))))
     send_msg(socket, ret)
 
+
+def print_mod_commands(socket, channel, name, args, qwindow=None, tags={}):
+    global commands
+    ret = create_msg(channel, "Available commands: " +
+                     ", ".join(sorted(list(mod_commands.keys()))))
+    send_msg(socket, ret)
+
 commands = dict()
 commands["commands"] = print_commands
+commands["mod_commands"] = print_mod_commands
 commands["enter"] = Larbot.self_module.commands.smash_commands.enter
 commands["list"] = Larbot.self_module.commands.smash_commands.list_entered
 commands["eta"] = Larbot.self_module.commands.smash_commands.eta
@@ -75,6 +83,7 @@ mod_commands["move"] = Larbot.self_module.commands.smash_commands.move
 mod_commands["add"] = Larbot.self_module.commands.smash_commands.add
 mod_commands["subsonly"] = Larbot.self_module.commands.smash_commands.set_subs_only
 mod_commands["limit"] = Larbot.self_module.commands.smash_commands.set_limit_reentry
+mod_commands["resetinfo"] = Larbot.self_module.commands.smash_commands.reset_info
 
 hidden_commands = dict()
 hidden_commands["join"] = Larbot.self_module.commands.smash_commands.enter

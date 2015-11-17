@@ -196,7 +196,7 @@ def add(socket, channel, name, args, tags={}):
             "@{:s}: Usage: '!add <TwitchName> <NNID> <Mii name>'".format(name))
         send_msg(socket, ret)
         return
-    elif(player_name not in player_NNID.keys()):
+    elif(len(args) >= 3):
         nnid = args[1].replace("<", "").replace(">", "")
         mii_name = args[2].replace("<", "").replace(">", "")
         player_NNID[player_name] = {'NNID': nnid, 'Mii name': mii_name}
@@ -735,6 +735,43 @@ def set_limit_reentry(socket, channel, name, args, tags={}):
     send_msg(socket, ret)
 
     save_to_file()
+
+def reset_info(socket, channel, name, args, tags={}):
+    global current_player
+    global player_list
+    global player_list_cap
+    global player_NNID
+    global line_opened
+    global subs_only
+    global qwindow
+    global limit_reentry
+    global played_list
+
+    if(not (name == channel or
+            tags.get('user-type', user_type.empty) == user_type.mod)):
+        return
+
+    if(len(args) < 1):
+        ret = create_msg(channel,
+                         "@{:s}: Usage: !resetinfo <Twitch name>".format(name))
+        send_msg(socket, ret)
+        return
+
+    player_name = args[1]
+
+    player_NNID_lock.acquire()
+    if(player_name in player_NNID):
+        del player_NNID[player_name]
+        ret = create_msg(
+            channel, 
+            "@{!s}: {!s}'s information has been reset!".format(name, player_name))
+    else:
+        ret = create_msg(
+            channel, 
+            "@{!s}: {!s} did not have any information.".format(name, player_name))
+
+    player_NNID_lock.release()
+    send_msg(socket, ret)
 
 
 def load(qmain_window):
