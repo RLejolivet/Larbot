@@ -757,7 +757,7 @@ def reset_info(socket, channel, name, args, tags={}):
         send_msg(socket, ret)
         return
 
-    player_name = args[1]
+    player_name = args[0]
 
     player_NNID_lock.acquire()
     if(player_name in player_NNID):
