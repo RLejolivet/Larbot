@@ -107,7 +107,7 @@ def main(nick, oauth, channel, qwindow=None):
                 break
 
         print(
-            readbuffer.encode(encoding=sys.stdout.encoding,
+            readbuffer.encode(encoding='latin-1',
                               errors='replace').decode())
 
         # Didn't receive anything, connection may be closed
