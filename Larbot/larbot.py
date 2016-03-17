@@ -4,9 +4,9 @@ Created on 2015-03-15
 
 @author: Laraeph
 """
-import sys
 import time
 import socket
+import requests
 import threading
 
 from Larbot.self_module.commands_manager import run
@@ -26,6 +26,14 @@ def connect(nick, oauth, channel, qwindow=None):
         pass
 
     s = socket.socket()
+
+    try:
+        servers = requests.get("http://tmi.twitch.tv/servers",
+                               params={"channel": channel}).json()["servers"]
+        HOST = servers[0].split(":")[0]
+        PORT = int(servers[0].split(":")[1])
+    except:
+        print("Couldn't get the HOST:PORT from tmi.twitch.tv")
 
     try:
         s.connect((HOST, PORT))
