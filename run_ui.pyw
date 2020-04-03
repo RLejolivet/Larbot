@@ -55,15 +55,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         '''Popup a box with about message.'''
         QMessageBox.about(
             self,
-            "Simple IRC bot for Twitch created by Laraeph",
-            "Simple IRC bot for Twitch created by Laraeph\n"
-            "Manage viewer battles for Smash Wii U easily!\n"
-            "Howto use : http://mentor2.dyndns.org/Laraeph/Larbot\n"
-            "\n"
-            "Contact me for questions, evolution requests:\n"
-            "twitch.tv/laraeph\n"
-            "twitter.com/LaraephFR\n"
-            "laraephddo@gmail.com\n")
+            "Simple IRC bot for Twitch created by Raphael",
+            "Simple IRC bot for Twitch created by Raphael\n"
+            "Manage viewer battles for Smash Wii U easily!\n")
 
     def not_connected(self):
         QMessageBox.about(

@@ -15,8 +15,6 @@ This bot only works with the standard Twitch IRC server. Not that I think it wil
 Documentation
 =============
 
-The user documentation can be found, along with the latest "compiled" binary, at `http://mentor2.dyndns.org/Laraeph/Larbot`.
-
 There is unfortunately no code documentation for people trying to read it. The basic idea is:
 
 	- *run_ui.pyw* contains the Qt part of the project to make the interface work (along with the files in Larbot/ui)
